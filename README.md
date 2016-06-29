@@ -1,4 +1,5 @@
-# MCU Video Processing Software for SOC robot war competition
+# MCU Video Processing Software 
+# for SOC robot war competition
 
 Park Jong Sang / whdtkd546@gmail.com
 Shin In Gyu / shinik77/naver.com
