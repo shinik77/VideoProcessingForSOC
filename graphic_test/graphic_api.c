@@ -62,12 +62,15 @@ void clear_screen(void)
 	ioctl(graphic_handle, AMAZON2_IOCTL_CLEAR_SCREEN, 0);
 }
 
+//?
 void flip(void)
 {
 	if (graphic_handle < 0)
 		return;
 	ioctl(graphic_handle, AMAZON2_IOCTL_FLIP, 0);
 }
+
+//?
 void flipwait(void)
 {
 	if (graphic_handle < 0)
@@ -173,7 +176,7 @@ int draw_rotate_value(int cdx, int cdy, int ctx, int cty, float zoom, unsigned i
 	InitDY 	= y;
 	EndX	= x+dx-1;
 	EndY	= y+dy-1;
-	
+
 	InitSX  = (x+tx+ctx)*512;
 	dxSx    = cosa;
 	dxSy    = -sina;
