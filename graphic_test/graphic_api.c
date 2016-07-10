@@ -62,7 +62,7 @@ void clear_screen(void)
 	ioctl(graphic_handle, AMAZON2_IOCTL_CLEAR_SCREEN, 0);
 }
 
-//?
+// Flip fpga buffer
 void flip(void)
 {
 	if (graphic_handle < 0)
@@ -461,4 +461,19 @@ void close_graphic(void)
 {
 	if (graphic_handle != -1)
 		close(graphic_handle);
+}
+
+void save_binaries(U16* buf)
+{
+	//file write using U16* buf pointer
+	//save and open binaries. compare with bmp pixel values
+	FILE *fp;
+	if ((fp = fopen("samplebin", "wt")) == NULL)
+	{
+		printf("file open failed");
+		return;
+	}
+	fwrite((void *)buf, 1, sizeof(buf), fp);
+	fclose(fp);
+	printf("file is written.");
 }
