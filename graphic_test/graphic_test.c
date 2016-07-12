@@ -52,9 +52,13 @@ static void demo(void)
 		y = rand() % 460;
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(0, 255, 0));
 		read_fpga_video_data(fpga_videodata);
+		if(i%2 == 0){
+			save_binaries(fpga_videodata)
+		}
 		draw_fpga_video_data(fpga_videodata, 10, 10);
 		flip();
 		printf("%d\n", i);
+
 	}
 	free(fpga_videodata);
 	printf("Demo End\n");
@@ -224,4 +228,3 @@ int main(int argc, char **argv)
 	close_graphic();
 	return 0;
 }
-
