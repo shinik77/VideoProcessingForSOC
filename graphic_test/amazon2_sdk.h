@@ -5,7 +5,7 @@
 
 
 #if defined(BOOL)
-#else 
+#else
 typedef int BOOL;
 #endif
 
@@ -24,12 +24,12 @@ typedef volatile unsigned int	vU32;
 typedef volatile unsigned long long	vU64;
 
 
-#ifdef TRUE	
-#undef TRUE 
+#ifdef TRUE
+#undef TRUE
 #endif
 #define TRUE 1
 
-#ifdef FALSE 
+#ifdef FALSE
 #undef FALSE
 #endif
 #define FALSE 0
@@ -233,7 +233,7 @@ typedef struct _tag_DrawFPGADataArg
 	int dy;// screen y;
 } DrawFPGADataArg;
 
-typedef struct _tag_DrawRaw_value 
+typedef struct _tag_DrawRaw_value
 {
 	int InitDX;
 	int InitDY;
@@ -263,7 +263,7 @@ typedef struct _tag_DrawRaw_value
 #define GetBlueValue(C)	(C&0xff)
 
 /*#######################################################*/
-typedef enum 
+typedef enum
 {
 	AMAZON2_IOCTL_CLEAR_SCREEN=0,
 	AMAZON2_IOCTL_FLIP,
@@ -277,7 +277,7 @@ typedef enum
 
 	AMAZON2_IOCTL_DRAW_RECT_FILL,
 
-	AMAZON2_IOCTL_GET_DIRECT_CAMERA_SURFACE, //surface's pixel data is updated by H/W 
+	AMAZON2_IOCTL_GET_DIRECT_CAMERA_SURFACE, //surface's pixel data is updated by H/W
 	AMAZON2_IOCTL_READ_FPGA_VIDEO_DATA,
 	AMAZON2_IOCTL_DRAW_FPGA_VIDEO_DATA,
 	AMAZON2_IOCTL_DRAW_FPGA_VIDEO_DATA_FULL,
