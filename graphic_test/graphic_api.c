@@ -62,15 +62,12 @@ void clear_screen(void)
 	ioctl(graphic_handle, AMAZON2_IOCTL_CLEAR_SCREEN, 0);
 }
 
-// Flip fpga buffer
 void flip(void)
 {
 	if (graphic_handle < 0)
 		return;
 	ioctl(graphic_handle, AMAZON2_IOCTL_FLIP, 0);
 }
-
-//?
 void flipwait(void)
 {
 	if (graphic_handle < 0)
@@ -202,7 +199,6 @@ int draw_rotate_value(int cdx, int cdy, int ctx, int cty, float zoom, unsigned i
 void read_fpga_video_data(U16* buf)
 {
 	ioctl(graphic_handle, AMAZON2_IOCTL_READ_FPGA_VIDEO_DATA, buf);
-
 }
 
 void draw_fpga_video_data(U16* buf, int dx, int dy)
@@ -244,15 +240,20 @@ int direct_camera_display_stat(void)
 	return ioctl(graphic_handle, AMAZON2_IOCTL_CAM_DISP_STAT, 0);
 }
 
+
+
 /******************************************************************
 		BMP load
 ******************************************************************/
 
 #define BI_RGB        0L
 typedef struct  {
+	// Bitmap file header, 14 bytes (2 bytes ommited)
 	U32   bfSize;
 	U32    bfReserved;
 	U32   bfOffBits;
+
+	// Bitmap info header, 20 bytes
 	U32  biSize;
 	S32   biWidth;
 	S32   biHeight;
@@ -276,6 +277,7 @@ typedef struct  {
 #define EXTRACT_READ32(startaddr,offset) (U32)(startaddr[offset] + (U32)(startaddr[offset+1]<<8) + (U32)(startaddr[offset+2]<<16) + (U32)(startaddr[offset+3]<<24))
 
 static BITMAPFILEHEADER bmpfh;
+
 
 SURFACE* LoadSurfaceInfoFromRGB(U8* bmpdata, U8 bpp, U32 w, U32 h, U32 bmpdatasize, U8* pal)
 {
@@ -314,6 +316,7 @@ SURFACE* LoadSurfaceInfoFromRGB(U8* bmpdata, U8 bpp, U32 w, U32 h, U32 bmpdatasi
 
 		return surface;
 	}
+	// 180 x 120 x 3 (bpp = 24)///////
 	else if (bpp == 24)
 	{
 		U32 screenbpp = 16;
@@ -396,7 +399,7 @@ SURFACE* loadbmp(char* fname)
 		if (bmpfh.biBitCount == 4)
 		{
 			pal = (U8*)malloc(64);
-			fread( pal,1, 64, fp);
+			fread(pal,1, 64, fp);
 		}
 		else
 		{
@@ -463,17 +466,58 @@ void close_graphic(void)
 		close(graphic_handle);
 }
 
-void save_binaries(U16* buf)
+////////////////////////////////////////////////////////////////////////
+void buf_to_binaryfile(U16 *buf)
 {
-	//file write using U16* buf pointer
-	//save and open binaries. compare with bmp pixel values
+	// file write using U16* buf pointer.
+	// save and open binaries. need compare with bmp pixeel values
 	FILE *fp;
 	if ((fp = fopen("samplebin", "wt")) == NULL)
 	{
 		printf("file open failed");
-		return;
 	}
-	fwrite((void *)buf, 1, sizeof(buf), fp);
+	else
+	{
+		fwrite((void*)buf, 1, 120*180*2, fp);
+		//printf("sizeof(buf) = %d", sizeof(buf));
+		fclose(fp);
+		printf("file is written. file size : %d\n", 180*120*2);
+	}
+}
+char* fpgabuf_to_bmpfile(U16 *buf){
+	FILE *fp;
+	char fname[10] = "sample.bmp";
+	BITMAPFILEHEADER header;
+	int i;
+
+	fp = fopen(fname, "wb");
+	U16 biType[1] = {0x4d42};	// "BM"
+
+	header.bfSize = sizeof(BITMAPFILEHEADER)+2 + 120*180*2;
+	header.bfReserved = 0;
+	header.bfOffBits = sizeof(BITMAPFILEHEADER)+2;
+
+	header.biSize = sizeof(BITMAPFILEHEADER)+2;
+	header.biWidth = 180;
+	header.biHeight = 120;
+	header.biPlanes = 1;
+	header.biBitCount = 16;
+	header.biCompression = 0;
+	header.biSizeImage = 180*120;
+	header.biXPelsPerMeter = 0;
+	header.biYPelsPerMeter = 0;
+	header.biClrUsed = 0;
+	header.biClrImportant = 0;
+
+	fwrite((void*)biType, 1, sizeof(U16), fp);
+	fwrite(&header, 1, sizeof(BITMAPFILEHEADER), fp);
+
+	for(i = 120-1; i>=0; i--){
+		fwrite(&buf[i*180], 1, 180, fp);
+	}
 	fclose(fp);
-	printf("file is written.");
+	return fname;
+}
+SURFACE* fpgabuf_to_surface(U16 *buf){
+	return NULL;
 }

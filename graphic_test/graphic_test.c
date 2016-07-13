@@ -47,18 +47,18 @@ static void demo(void)
 		clear_screen();
 		x = rand() % 300;
 		y = rand() % 460;
-		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 0, 0));
+		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
 		x = rand() % 300;
 		y = rand() % 460;
-		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(0, 255, 0));
+		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
 		read_fpga_video_data(fpga_videodata);
-		if(i%2 == 0){
-			save_binaries(fpga_videodata)
+		if (i%2 == 0){
+			buf_to_binaryfile(fpga_videodata);
+			fpgabuf_to_bmpfile(fpga_videodata);
 		}
 		draw_fpga_video_data(fpga_videodata, 10, 10);
 		flip();
-		printf("%d\n", i);
-
+		if (i%5 == 0) printf("i : %d\n", i);
 	}
 	free(fpga_videodata);
 	printf("Demo End\n");

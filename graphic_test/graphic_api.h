@@ -17,12 +17,17 @@ void read_fpga_video_data(U16* buf);
 void draw_fpga_video_data(U16* buf, int dx, int dy);
 void draw_fpga_video_data_full(U16* buf);
 void draw_img_from_buffer(U16* buf, int cdx, int cdy, int ctx, int cty, float zoom, int angle);
+
+
 void direct_camera_display_on(void);
 void direct_camera_display_off(void);
 int direct_camera_display_stat(void);
-void save_binaries(U16* buf); // save binaries to local
-SURFACE* loadbmp(char* fname);
 
+SURFACE* loadbmp(char* fname);
 int open_graphic(void);
 void close_graphic(void);
+
+void buf_to_binaryfile(U16* buf);
+char* fpgabuf_to_bmpfile(U16* buf);
+SURFACE* fpgabuf_to_surface(U16 *buf);
 #endif //__AMAZON2_GRAPHIC_API_H__
