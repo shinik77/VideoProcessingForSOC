@@ -497,24 +497,21 @@ char* fpgabuf_to_bmpfile(U16 *buf){
 	header.bfReserved = 0;
 	header.bfOffBits = sizeof(BITMAPFILEHEADER)+2;
 
-	header.biSize = sizeof(BITMAPFILEHEADER)+2;
+	header.biSize = 40;
 	header.biWidth = 180;
 	header.biHeight = 120;
 	header.biPlanes = 1;
 	header.biBitCount = 16;
 	header.biCompression = 0;
-	header.biSizeImage = 180*120;
-	header.biXPelsPerMeter = 0;
-	header.biYPelsPerMeter = 0;
+	header.biSizeImage = 180*120*2;
+	header.biXPelsPerMeter = 2834;
+	header.biYPelsPerMeter = 2834;
 	header.biClrUsed = 0;
 	header.biClrImportant = 0;
 
 	fwrite((void*)biType, 1, sizeof(U16), fp);
 	fwrite(&header, 1, sizeof(BITMAPFILEHEADER), fp);
-
-	for(i = 120-1; i>=0; i--){
-		fwrite(&buf[i*180], 1, 180, fp);
-	}
+	fwrite((void*)buf, 1, 120*180*2, fp);
 	fclose(fp);
 	return fname;
 }

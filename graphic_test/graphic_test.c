@@ -53,8 +53,10 @@ static void demo(void)
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
 		read_fpga_video_data(fpga_videodata);
 		if (i%2 == 0){
-			buf_to_binaryfile(fpga_videodata);
-			fpgabuf_to_bmpfile(fpga_videodata);
+			//buf_to_binaryfile(fpga_videodata);
+			//draw_surface(loadbmp(fpgabuf_to_bmpfile(fpga_videodata)), 10, 10);
+			//fpgabuf_to_bmpfile(fpga_videodata);
+			//draw_surface(loadbmp("/mnt/f0/sample.bmp"), 30, 10);
 		}
 		draw_fpga_video_data(fpga_videodata, 10, 10);
 		flip();
