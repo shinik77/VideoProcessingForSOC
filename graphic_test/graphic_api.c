@@ -467,7 +467,40 @@ void close_graphic(void)
 }
 
 ////////////////////////////////////////////////////////////////////////
-void buf_to_binaryfile(U16 *buf)
+
+void color_ref(U16* buf, RGB565* pixel, int x, int y){
+	// Clip
+	if(x<0 || x>=180){
+		printf("pixel index out of range - X:%d\n", x);
+		return;
+	}else if (y<0 || y>=120){
+		printf("pixel index out of range - Y:%d\n", y);
+		return;
+	}else{
+        printf("pixel value : 0x%X\n", buf[(179-y)*180 + x]);
+		pixel->b = (buf[(179 - y)*180 + x]) & 0x1f;
+        pixel->g = (buf[(179 - y)*180 + x] >> 5) & 0x3f;
+		pixel->r = (buf[(179 - y)*180 + x] >> 11) & 0x1f;
+		return;
+	}
+}
+
+void avr_rbg(U16* buf, RGB565* pixel){
+	int i, j;
+	U32 rsum = 0, bsum = 0, gsum = 0;
+	for(i = 0; i<120; i++){
+		for(j = 0; j<180; j++){
+			bsum += (buf[(179 - j)*180 + i]) & 0x1f;
+			gsum += (buf[(179 - j)*180 + i] >> 5) & 0x3f;
+			rsum += (buf[(179 - j)*180 + i] >> 11) & 0x1f;
+		}
+	}
+	pixel->b = bsum/(180*120);
+	pixel->g = gsum/(180*120*2);
+	pixel->r = rsum/(180*120);
+	return;
+}
+/*void buf_to_binaryfile(U16 *buf)
 {
 	// file write using U16* buf pointer.
 	// save and open binaries. need compare with bmp pixeel values
@@ -515,6 +548,10 @@ char* fpgabuf_to_bmpfile(U16 *buf){
 	fclose(fp);
 	return fname;
 }
+
+
+
+
 SURFACE* fpgabuf_to_surface(U16 *buf){
 	return NULL;
-}
+}*/

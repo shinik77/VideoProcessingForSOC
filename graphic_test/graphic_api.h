@@ -27,6 +27,8 @@ SURFACE* loadbmp(char* fname);
 int open_graphic(void);
 void close_graphic(void);
 
+void avr_rbg(U16* buf, RGB565* pixel);
+void color_ref(U16* buf, RGB565* pixel, int x, int y);
 void buf_to_binaryfile(U16* buf);
 char* fpgabuf_to_bmpfile(U16* buf);
 SURFACE* fpgabuf_to_surface(U16 *buf);
