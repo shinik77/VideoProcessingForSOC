@@ -93,9 +93,9 @@ typedef struct _tagrRGB
 
 typedef struct _tagRGB565
 {
-	int b : 5;
-	int g : 6;
-	int r : 5;
+	unsigned b : 5;
+	unsigned g : 6;
+	unsigned r : 5;
 } RGB565;
 
 typedef union

@@ -37,8 +37,9 @@ void show_help(void)
 
 static void demo(void)
 {
-	int i = 400;
+	int i = 4000;
 	U16* fpga_videodata = (U16*)malloc(180 * 120 * 2);
+	RGB565* pixeldata = (RGB565*)malloc(2);
 	int x = 0;
 	int y = 0;
 	printf("Demo Start\n");
@@ -52,15 +53,16 @@ static void demo(void)
 		y = rand() % 460;
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
 		read_fpga_video_data(fpga_videodata);
-		if (i%2 == 0){
-			buf_to_binaryfile(fpga_videodata);
-			fpgabuf_to_bmpfile(fpga_videodata);
+		if (i % 2 == 0) {
+			avr_rbg(fpga_videodata, pixeldata);
+			printf("r : %d, g : %d, b : %d\n", pixeldata->r, pixeldata->g, pixeldata->b);
 		}
 		draw_fpga_video_data(fpga_videodata, 10, 10);
 		flip();
-		if (i%5 == 0) printf("i : %d\n", i);
+		//if (i%5 == 0) printf("i : %d\n", i);
 	}
 	free(fpga_videodata);
+	free(pixeldata);
 	printf("Demo End\n");
 }
 
