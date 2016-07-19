@@ -46,17 +46,17 @@ static void demo(void)
 	while (i--)
 	{
 		clear_screen();
-		x = rand() % 300;
+		/*x = rand() % 300;
 		y = rand() % 460;
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
 		x = rand() % 300;
 		y = rand() % 460;
-		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));
+		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));*/
 		read_fpga_video_data(fpga_videodata);
-		if (i % 2 == 0) {
-			avr_rbg(fpga_videodata, pixeldata);
-			printf("r : %d, g : %d, b : %d\n", pixeldata->r, pixeldata->g, pixeldata->b);
-		}
+		//avr_rbg(fpga_videodata, pixeldata);
+		//printf("r : %d, g : %d, b : %d\n", pixeldata->r, pixeldata->g, pixeldata->b);
+		draw_fpga_video_data(fpga_videodata, 10, 200);
+		mask_filtering(fpga_videodata, mean_mask(3), 3);
 		draw_fpga_video_data(fpga_videodata, 10, 10);
 		flip();
 		//if (i%5 == 0) printf("i : %d\n", i);
