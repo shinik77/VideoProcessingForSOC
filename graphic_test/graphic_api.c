@@ -468,31 +468,33 @@ void close_graphic(void)
 
 ////////////////////////////////////////////////////////////////////////
 
+// Assume 180x120x16bit pixel
 void color_ref(U16* buf, RGB565* pixel, int x, int y){
 	// Clip
-	if(x<0 || x>=180){
+	if(x < 0 || x >= 180){
 		printf("pixel index out of range - X:%d\n", x);
 		return;
-	}else if (y<0 || y>=120){
+	}else if (y < 0 || y >= 120){
 		printf("pixel index out of range - Y:%d\n", y);
 		return;
 	}else{
-        printf("pixel value : 0x%X\n", buf[(179-y)*180 + x]);
-		pixel->b = (buf[(179 - y)*180 + x]) & 0x1f;
-        pixel->g = (buf[(179 - y)*180 + x] >> 5) & 0x3f;
-		pixel->r = (buf[(179 - y)*180 + x] >> 11) & 0x1f;
+        printf("pixel value : 0x%X\n", buf[(119 - y)*180 + x]);
+		pixel->b = BLUEIN565(buf[(119 - y)*180 + x]);
+        pixel->g = GREENIN565(buf[(119 - y)*180 + x]);
+		pixel->r = REDIN565(buf[(119 - y)*180 + x]);
 		return;
 	}
 }
 
+// Assume 180x120x16bit pixel
 void avr_rbg(U16* buf, RGB565* pixel){
-	int i, j;
+	int x, y;
 	U32 rsum = 0, bsum = 0, gsum = 0;
-	for(i = 0; i<120; i++){
-		for(j = 0; j<180; j++){
-			bsum += (buf[(179 - j)*180 + i]) & 0x1f;
-			gsum += (buf[(179 - j)*180 + i] >> 5) & 0x3f;
-			rsum += (buf[(179 - j)*180 + i] >> 11) & 0x1f;
+	for(y = 120-1; y >= 0; y--){
+		for(x = 0; x < 180; x++){
+			bsum += BLUEIN565(buf[y*180 + x]);
+			gsum += GREENIN565(buf[y*180 + x]);
+			rsum += REDIN565(buf[y*180 + x]);
 		}
 	}
 	pixel->b = bsum/(180*120);
@@ -500,6 +502,70 @@ void avr_rbg(U16* buf, RGB565* pixel){
 	pixel->r = rsum/(180*120);
 	return;
 }
+// Usage : mask_filtering(buf, mean_mask(3), 3);
+// Dividing by summation of all array elements is required.
+void mask_filtering(U16* buf, U16* mask, int masksize){
+	int width = 180;
+	int height = 120;
+	int half_masksize = masksize / 2;
+	int r, c;
+	for(r = 0; r < height; r++){
+	for(c = 0; c < width; c++){
+		U16 sum_of_pixel_count = 0;
+		U16 sum_of_pixel_valueR = 0;
+		U16 sum_of_pixel_valueG = 0;
+		U16 sum_of_pixel_valueB = 0;
+		int x, y;
+		for(y = -half_masksize; y <= half_masksize; y++){
+		for(x = -half_masksize; x <= half_masksize; x++){
+			int px = c + x;
+			int py = r + y;
+			// If (r+dx, c+dy) pixel is rocated in valid range
+			if((px >= 0) && (px < width) && (py >= 0) && (py < height)){
+				sum_of_pixel_valueR += REDIN565(buf[py*180 + px]);
+				sum_of_pixel_valueG += GREENIN565(buf[py*180 + px]);
+				sum_of_pixel_valueB += BLUEIN565(buf[py*180 + px]);
+				sum_of_pixel_count++;
+				if(r == 60 && c == 100) {
+					printf("px : %d, py : %d, pR :%d, pB : %d, pG : %d\n", px, py, sum_of_pixel_valueR, sum_of_pixel_valueB, sum_of_pixel_valueG);
+				}
+			}
+		}
+		}
+		sum_of_pixel_valueR = (U16)(sum_of_pixel_valueR / (float)(sum_of_pixel_count));
+		sum_of_pixel_valueG = (U16)(sum_of_pixel_valueG / (float)(sum_of_pixel_count));
+		sum_of_pixel_valueB = (U16)(sum_of_pixel_valueB / (float)(sum_of_pixel_count));
+		buf[r*180 + c] = (sum_of_pixel_valueB | (sum_of_pixel_valueG<<5) | (sum_of_pixel_valueR<<11));
+		if(r == 60 && c == 100) {
+			printf("pcnt : %d\n", sum_of_pixel_count);
+			printf("sum_of_pixel_valueR:0x%X, sum_of_pixel_valueG:0x%X, sum_of_pixel_valueB:0x%X\n",
+				REDIN565(buf[r*180 + c]), GREENIN565(buf[r*180 + c]), BLUEIN565(buf[r*180 + c]));
+
+		}
+	}
+	}
+}
+
+
+U16* mean_mask(int size){
+	U16* arr;
+	memset(arr, 0, sizeof(arr)*size);
+	int i;
+	// size * size 2d matrix
+	for(i = 0; i < size*size; i++){
+		arr[i] = 1;
+	}
+	return arr;
+}
+
+// Gaussian mask sigma : 1.0 / size : 3x3
+U16* gaussian_mask(){
+	U16 gmask[9] =  {113, 838, 113,
+					838, 6193, 838,
+					113, 838, 113};
+	return gmask;
+} ///*************Need to be divided by 10000******************
+
 /*void buf_to_binaryfile(U16 *buf)
 {
 	// file write using U16* buf pointer.

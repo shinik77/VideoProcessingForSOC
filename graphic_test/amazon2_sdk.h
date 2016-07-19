@@ -252,17 +252,20 @@ typedef struct _tag_DrawRaw_value
 
 #define MAKE_COLORREF(r,g,b)	(0xff<<24 | (EGL_COLOR)((((r << 8) | g) << 8) | b))//ARGB
 #define MAKE_RGB888(r,g,b)	((EGL_COLOR)((((r << 8) | g) << 8) | b))//RGB
-#define MAKE_RGB565(r,g,b)	((U16)((((U16)r&0xf8)<<8)|(((U16)g&0xfc)<<3)|(((U16)b&0xf8)>>3)))  ///< make RGB565 from r,g,b
+#define MAKE_RGB565(r,g,b)	((U16)( ( ((U16)r&0xf8) <<8 ) | (((U16)g&0xfc)<<3)|(((U16)b&0xf8)>>3)))  ///< make RGB565 from r,g,b
 #define MAKE_COLORARGB(a,r,g,b)	((EGL_COLOR)((((((a<<8) | r) << 8) | g) << 8) | b))//ARGB
 #define EXTRACT_ARGB(c,a,r,g,b)	do{a=(U8)(c>>24);r=(U8)(c>>16);g=(U8)(c>>8);b=(U8)(c>>0);}while(0);
 #define EXTRACT_RGB(c,r,g,b)	do{r=(U8)(c>>16);g=(U8)(c>>8);b=(U8)(c);}while(0);
 #define EXTRACT_RGB565(c,r,g,b)	do{r=(U8)(c>>11);g=(U8)((c>>5)&0x3f);b=(U8)(c & 0x1f);}while(0);
 #define MAKE_RGB565FROM888(c)		((U16)((((U16)(c>>16)&0xf8)<<8)|(((U16)(c>>8)&0xfc)<<3)|(((U16)c&0xf8)>>3)))
+#define REDIN565(p)     ((p>>11)&0x1f)
+#define BLUEIN565(p)    (p&0x1f)
+#define GREENIN565(p)   ((p>>5)&0x3f)
 #define GetRedValue(C)	((C>>16)&0xff)
 #define GetGreenValue(C)	((C>>8)&0xff)
 #define GetBlueValue(C)	(C&0xff)
 
-/*#######################################################*/
+/*###################################2####################*/
 typedef enum
 {
 	AMAZON2_IOCTL_CLEAR_SCREEN=0,

@@ -27,6 +27,9 @@ SURFACE* loadbmp(char* fname);
 int open_graphic(void);
 void close_graphic(void);
 
+U16* mean_mask(int size);
+U16* gaussian_mask();
+void mask_filtering(U16* buf, U16* mask, int masksize);
 void avr_rbg(U16* buf, RGB565* pixel);
 void color_ref(U16* buf, RGB565* pixel, int x, int y);
 void buf_to_binaryfile(U16* buf);
