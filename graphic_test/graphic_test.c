@@ -40,6 +40,7 @@ static void demo(void)
 	int i = 4000;
 	U16* fpga_videodata = (U16*)malloc(180 * 120 * 2);
 	RGB565* pixeldata = (RGB565*)malloc(2);
+	YUV422* yuv_PixelData = (YUV422*)malloc(2);
 	int x = 0;
 	int y = 0;
 	printf("Demo Start\n");
@@ -53,6 +54,7 @@ static void demo(void)
 		y = rand() % 460;
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));*/
 		read_fpga_video_data(fpga_videodata);
+		rgb_change_yuv(fpga_videodata, yuv_PixelData);
 		//avr_rbg(fpga_videodata, pixeldata);
 		//printf("r : %d, g : %d, b : %d\n", pixeldata->r, pixeldata->g, pixeldata->b);
 		draw_fpga_video_data(fpga_videodata, 10, 200);
@@ -63,6 +65,7 @@ static void demo(void)
 	}
 	free(fpga_videodata);
 	free(pixeldata);
+	free(yuv_PixelData);
 	printf("Demo End\n");
 }
 

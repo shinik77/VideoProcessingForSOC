@@ -485,7 +485,28 @@ void color_ref(U16* buf, RGB565* pixel, int x, int y){
 		return;
 	}
 }
-
+void rgb_change_yuv(U16* buf, YUV422* yuv_pixel){
+	int x,y;
+	U16 tmp,Y,U,V;
+	U32 Ysum=0, Usum =0, Vsum=0;
+	for(y=120-1,y>=0,y--){
+		for(x=0;x<180;x++){
+			tmp = (int)(0.257*REDIN565(buf[y*180+x])+0.504*GREENIN565(buf[y*180 + x])+0.098*BLUEIN565(buf[y*180+x])+16);
+			Y = max(min(tmp,0xFF),0x00);
+			Ysum += Y;
+			tmp = (int)(0.439*REDIN565(buf[y*180+x])-0.368*GREENIN565(buf[y*180 + x])-0.071*BLUEIN565(buf[y*180+x])+128);
+			U = max(min(tmp,0xFF),0x00);
+			Usum += U;
+			tmp = (int)(-0.148*REDIN565(buf[y*180+x])+0.291*GREENIN565(buf[y*180 + x])+0.493*BLUEIN565(buf[y*180+x])+128);
+			V = max(min(tmp,0xFF),0x00);
+			Vsum += V;
+		}
+	}
+	yuv_pixel->Y = Ysum/(180*120);
+	yuv_pixel->U = Usum/(180*120*2);
+	yuv_pixel->V = Vsum/(180*120);
+	return;
+}
 // Assume 180x120x16bit pixel
 void avr_rbg(U16* buf, RGB565* pixel){
 	int x, y;
