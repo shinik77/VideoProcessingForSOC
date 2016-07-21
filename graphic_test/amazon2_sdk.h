@@ -90,7 +90,12 @@ typedef struct _tagrRGB
 	U8 r;
 	U8 resv; //reserved
 } srRGB;
-
+typedef struct _tagYUV
+{
+  unsigned y : 8;
+  unsigned u : 4;
+  unsigned v : 4;
+}YUV422;
 typedef struct _tagRGB565
 {
 	unsigned b : 5;
