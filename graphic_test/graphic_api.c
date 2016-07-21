@@ -501,9 +501,12 @@ void rgb2yuv(U16* buf, YUV422* yuv_pixel){
 			Vsum +=V;
 		}
 	}
-	yuv_pixel->Y = ((float)Ysum/(180*120))<<3;
-	yuv_pixel->U = ((float)Usum/(180*120*2))>>1;
-	yuv_pixel->V = ((float)Vsum/(180*120))>>1;
+	tmp = (float)Ysum / (180 * 120);
+	yuv_pixel->Y = tmp<<3;
+ 	tmp = (float)Usum / (180 * 120 * 2);
+ 	yuv_pixel->U = tmp>>1;
+ 	tmp = (float)Vsum / (180 * 120);
+ 	yuv_pixel->V = tmp>>1;
 	return;
 }
 /*
