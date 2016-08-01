@@ -494,8 +494,8 @@ void rgb2yuv(U16* buf, YUV422* yuv_pixel){
 	for(r=0;r<height;r++){
 		for(c=0;c<width;c++){
 			Y = 0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]);
-			U = 0.492*(BLUEIN565(buf[180*r+c])-Y);
-			V = 0.877*(REDIN565(buf[180*r+c])-Y);
+			U = 0.492*(BLUEIN565(buf[180*r+c])-0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]));
+			V = 0.877*(REDIN565(buf[180*r+c])-0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]));
 			Ysum +=Y;
 			Usum +=U;
 			Vsum +=V;
