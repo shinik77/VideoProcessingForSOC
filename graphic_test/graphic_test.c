@@ -55,7 +55,7 @@ static void demo(void)
 		draw_rectfill(x, y, 20, 20, MAKE_COLORREF(255, 255, 0));*/
 		read_fpga_video_data(fpga_videodata);
 		rgb2yuv(fpga_videodata, yuv_PixelData);
-		printf("Y : %d, U : %d, V : %d\n",yuv_PixelData->Y,yuv_PixelData->U,yuv_PixelData->V);
+		printf("Y : %f, U : %f, V : %f\n",yuv_PixelData->Y,yuv_PixelData->U,yuv_PixelData->V);
 		//avr_rbg(fpga_videodata, pixeldata);
 		//printf("r : %d, g : %d, b : %d\n", pixeldata->r, pixeldata->g, pixeldata->b);
 		draw_fpga_video_data(fpga_videodata, 10, 200);

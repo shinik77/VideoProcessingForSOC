@@ -489,23 +489,26 @@ void rgb2yuv(U16* buf, YUV422* yuv_pixel){
 	int width = 180;
 	int height = 120;
 	int r,c;
-	double tmp,Y,U,V;
+	float tmp,Y,U,V;
 	U16 red=0,green=0,blue=0;
-	U32 Ysum=0, Usum =0, Vsum=0;
-	U32 midYsum=0,midUsum=0, midVsum=0;
+	float Ysum=0, Usum =0, Vsum=0;
+	float midYsum=0,midUsum=0, midVsum=0;
 	for(r=0;r<height;r++){
 		for(c=0;c<width;c++){
 			red = REDIN565(buf[180*r+c]), blue = BLUEIN565(buf[180*r+c]), green = GREENIN565(buf[180*r+c]);
 			Y = 0.299*red+0.293*green+0.114*blue;
-			Y=Y<<3;
+			Y=Y*8;
 			U = 0.492*(0.886*blue-0.299*red-0.293*green);
-			U=U>>1;
 			V = 0.877*(0.701*red-0.293*green-0.114*blue);
-			V=V>>1;
+			if(r==90 && c==60){
+				printf("U값은: %f, V값은 : %f\n",U,V);
+			}
+			U=U/2;
+			V=V/2;
 			Ysum +=Y;
 			Usum +=U;
 			Vsum +=V;
-			if(r>=(heigt/3)&&r<=(2*heigt/3)&&c>=(width/3)&&c<=(2*width/3))
+			if(r>=(height/3)&&r<=(2*height/3))
 			{
 				midYsum +=Y;
 				midUsum +=U;
@@ -513,13 +516,13 @@ void rgb2yuv(U16* buf, YUV422* yuv_pixel){
 			}
 		}
 	}
-	tmp = (double)Ysum / (180 * 120);
-	yuv_pixel->Y = (U16)tmp;
- 	tmp = (double)Usum / (180 * 120);
- 	yuv_pixel->U = (U16)tmp;
- 	tmp = (double)Vsum / (180 * 120);
- 	yuv_pixel->V = (U16)tmp;
-	printf("midYsum : %g, midUsum : %g, midVsum : %g\n",(double)midYsum/(60*40), (double)midUsum/(60*40), (double)midVsum/(60*40));
+	tmp = (float)Ysum / (180 * 120);
+	yuv_pixel->Y = tmp;
+ 	tmp = (float)Usum / (180 * 120);
+ 	yuv_pixel->U = tmp;
+ 	tmp = (float)Vsum / (180 * 120);
+ 	yuv_pixel->V = tmp;
+	printf("midYsum : %f, midUsum : %f, midVsum : %f\n",(float)midYsum/(60*120), (float)midUsum/(60*120), (float)midVsum/(60*120));
 	return;
 }
 /*

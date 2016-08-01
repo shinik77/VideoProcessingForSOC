@@ -92,10 +92,10 @@ typedef struct _tagrRGB
 } srRGB;
 typedef struct _tagYUV
 {
-  unsigned Y : 8;
-  unsigned U : 4;
-  unsigned V : 4;
-}YUV422;
+  float Y : 8;
+  float U : 4;
+  float V : 4;
+} YUV422;
 typedef struct _tagRGB565
 {
 	unsigned b : 5;
