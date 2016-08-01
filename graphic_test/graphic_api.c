@@ -489,24 +489,37 @@ void rgb2yuv(U16* buf, YUV422* yuv_pixel){
 	int width = 180;
 	int height = 120;
 	int r,c;
-	U16 tmp,Y,U,V;
+	double tmp,Y,U,V;
+	U16 red=0,green=0,blue=0;
 	U32 Ysum=0, Usum =0, Vsum=0;
+	U32 midYsum=0,midUsum=0, midVsum=0;
 	for(r=0;r<height;r++){
 		for(c=0;c<width;c++){
-			Y = 0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]);
-			U = 0.492*(BLUEIN565(buf[180*r+c])-0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]));
-			V = 0.877*(REDIN565(buf[180*r+c])-0.299*REDIN565(buf[180*r+c])+0.293*GREENIN565(buf[180*r+c])+0.114*BLUEIN565(buf[180*r+c]));
+			red = REDIN565(buf[180*r+c]), blue = BLUEIN565(buf[180*r+c]), green = GREENIN565(buf[180*r+c]);
+			Y = 0.299*red+0.293*green+0.114*blue;
+			Y=Y<<3;
+			U = 0.492*(0.886*blue-0.299*red-0.293*green);
+			U=U>>1;
+			V = 0.877*(0.701*red-0.293*green-0.114*blue);
+			V=V>>1;
 			Ysum +=Y;
 			Usum +=U;
 			Vsum +=V;
+			if(r>=(heigt/3)&&r<=(2*heigt/3)&&c>=(width/3)&&c<=(2*width/3))
+			{
+				midYsum +=Y;
+				midUsum +=U;
+				midVsum +=V;
+			}
 		}
 	}
-	tmp = (float)Ysum / (180 * 120);
-	yuv_pixel->Y = tmp<<3;
- 	tmp = (float)Usum / (180 * 120 * 2);
- 	yuv_pixel->U = tmp>>1;
- 	tmp = (float)Vsum / (180 * 120);
- 	yuv_pixel->V = tmp>>1;
+	tmp = (double)Ysum / (180 * 120);
+	yuv_pixel->Y = (U16)tmp;
+ 	tmp = (double)Usum / (180 * 120);
+ 	yuv_pixel->U = (U16)tmp;
+ 	tmp = (double)Vsum / (180 * 120);
+ 	yuv_pixel->V = (U16)tmp;
+	printf("midYsum : %g, midUsum : %g, midVsum : %g\n",(double)midYsum/(60*40), (double)midUsum/(60*40), (double)midVsum/(60*40));
 	return;
 }
 /*
