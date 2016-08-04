@@ -20,14 +20,14 @@ COMPILER_PREFIX=/usr/local/ae32000-elf-uclibc-tools
 LDFLAGS = -r -Xlinker -T$(COMPILER_PREFIX)/lib/ae32000-elf2flt.ld
 LDFLAGS_DBG = -Xlinker -T$(COMPILER_PREFIX)/lib/ae32000-elf2flt.ld
 
-LDLIBS	= -lm -lc 
+LDLIBS	= -lm -lc
 
 
 export AS LD CC CPP AR NM STRIP OBJCOPY OBJDUMP RANLIB CFLAGS
 
-PROJ = graphic_test
+PROJ = RobotBody_Test
 
-OBJS = graphic_test.o graphic_api.o
+OBJS = RobotBody_Test.o uart_api.o robot_protocol.o graphic_api.o graphic_test.o
 
 
 all: $(PROJ)
@@ -42,10 +42,9 @@ $(PROJ): $(OBJS)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
-	
+
 .s.o:
 	$(AS) $< -o $@
-	
-clean:
-	rm -f *.o *.elf *.bflt *.dis $(PROJ) *.dbg ImageLoad_Test
 
+clean:
+	rm -f *.o *.elf *.bflt *.dis $(TEST) *.dbg RobotBody_Test
