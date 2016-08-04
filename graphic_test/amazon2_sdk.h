@@ -90,18 +90,30 @@ typedef struct _tagrRGB
 	U8 r;
 	U8 resv; //reserved
 } srRGB;
-typedef struct _tagYUV
-{
-  float Y : 8;
-  float U : 4;
-  float V : 4;
-} YUV422;
+
 typedef struct _tagRGB565
 {
 	unsigned b : 5;
 	unsigned g : 6;
 	unsigned r : 5;
 } RGB565;
+
+typedef struct _tagYUV
+{
+  float Y;
+  float U;
+  float V;
+} YUV;
+typedef struct _directYUV
+{
+  float u_value;
+  float v_value;
+} d_YUV;
+typedef struct _uvset
+{
+    float u;
+    float v;
+} uvset;
 
 typedef union
 {
@@ -263,9 +275,11 @@ typedef struct _tag_DrawRaw_value
 #define EXTRACT_RGB(c,r,g,b)	do{r=(U8)(c>>16);g=(U8)(c>>8);b=(U8)(c);}while(0);
 #define EXTRACT_RGB565(c,r,g,b)	do{r=(U8)(c>>11);g=(U8)((c>>5)&0x3f);b=(U8)(c & 0x1f);}while(0);
 #define MAKE_RGB565FROM888(c)		((U16)((((U16)(c>>16)&0xf8)<<8)|(((U16)(c>>8)&0xfc)<<3)|(((U16)c&0xf8)>>3)))
-#define REDIN565(p)     ((p>>11)&0x1f)
-#define BLUEIN565(p)    (p&0x1f)
-#define GREENIN565(p)   ((p>>5)&0x3f)
+#define RED_VALUE_IN565(p)     ((p>>11)&0x1f)
+#define BLUE_VALUE_IN565(p)    (p&0x1f)
+#define GREEN_VALUE_IN565(p)   ((p>>5)&0x3f)
+#define CLIP5BIT(p) (p < 0) ? 0 : p > 31 ? 31 : p
+#define CLIP6BIT(p) (p < 0) ? 0 : p > 63 ? 63 : p
 #define GetRedValue(C)	((C>>16)&0xff)
 #define GetGreenValue(C)	((C>>8)&0xff)
 #define GetBlueValue(C)	(C&0xff)
